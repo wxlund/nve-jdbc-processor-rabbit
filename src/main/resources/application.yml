@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: nve-jdbc-processor-rabbit
+  datasource:
+    url: jdbc:oracle:thin:@//cis86ldv.spr.bz:1521/CRMPRJ2S
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: WEBSRVR_030
+    password: trg4wq40x
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+
+jdbc:
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(f_checkuser(?, ?))
+  update: false
