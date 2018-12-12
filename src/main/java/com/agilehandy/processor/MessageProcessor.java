@@ -21,6 +21,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -45,6 +47,8 @@ import java.util.Set;
 @EnableConfigurationProperties({JdbcProperties.class})
 public class MessageProcessor {
 
+	Logger logger = LoggerFactory.getLogger(MessageProcessor.class);
+
 	private final JdbcWorker worker;
 
 	private JdbcProperties properties;
@@ -58,6 +62,8 @@ public class MessageProcessor {
 	@SendTo(Processor.OUTPUT)
 	public Message<Map<String, Object>> process(Message<String> request) {
 		String payload = request.getPayload();
+
+		logger.info("Received: " + payload);
 
 		// convert the payload (json) to string of params
 		// observe the order they are passed in
@@ -73,6 +79,10 @@ public class MessageProcessor {
 			result = new HashMap<>();
 			result.put("count", count);
 		}
+
+		logger.info("Sending: ");
+		result.entrySet().stream().forEach(entry ->
+				logger.info(entry.getKey() + ":" + (String)entry.getValue()));
 
 		// pass the result thru
 		return MessageBuilder.withPayload(result)
