@@ -67,16 +67,14 @@ public class MessageProcessor {
 
 		// perform jdbc operation
 		if(!properties.isUpdate()) {
-			result =
-					worker.query(properties.getQuery(), params);
+			result = worker.query(properties.getQuery(), params);
 		} else {
-			Integer count =
-					worker.update(properties.getQuery(), params);
+			Integer count = worker.update(properties.getQuery(), params);
 			result = new HashMap<>();
 			result.put("count", count);
 		}
 
-		// pass the result over
+		// pass the result thru
 		return MessageBuilder.withPayload(result)
 				.copyHeaders(request.getHeaders())
 				.build();

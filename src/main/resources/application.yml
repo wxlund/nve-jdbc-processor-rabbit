@@ -1,6 +1,13 @@
 spring:
   application:
     name: nve-jdbc-processor-rabbit
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: requests
+        output:
+          destination: replies
   datasource:
     url: jdbc:oracle:thin:@//cis86ldv.spr.bz:1521/CRMPRJ2S
     driver-class-name: oracle.jdbc.driver.OracleDriver
