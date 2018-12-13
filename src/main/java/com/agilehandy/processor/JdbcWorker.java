@@ -17,10 +17,13 @@
 
 package com.agilehandy.processor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,11 +38,29 @@ public class JdbcWorker {
 		this.template = jdbcTemplate;
 	}
 
-	public Map<String, Object> query(String sql, Object[] params) throws DataAccessException {
-		return template.queryForMap(sql, params);
+	public String query(String sql, Object[] params) throws DataAccessException {
+		Map<String, Object> map = template.queryForMap(sql, params);
+		return toXml(map);
 	}
 
-	public int update(String sql, Object[] params) throws DataAccessException {
-		return template.update(sql, params);
+	public String update(String sql, Object[] params) throws DataAccessException {
+		int count = template.update(sql, params);
+		Map<String, Object> map = new HashMap<>();
+		map.put("count", new Integer(count));
+		return toXml(map);
+	}
+
+	//TODO: change this to whatever format you would like the output to be
+	public String toXml(Map<String, Object> map) {
+		String xml = "";
+
+		XmlMapper xmlMapper = new XmlMapper();
+		try {
+			xml = xmlMapper.writer().withRootName("result").writeValueAsString(map);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return xml;
 	}
 }

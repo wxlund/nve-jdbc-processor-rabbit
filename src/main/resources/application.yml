@@ -8,6 +8,7 @@ spring:
           destination: txf1
         output:
           destination: replies
+          content-type: application/xml
   datasource:
     url: jdbc:oracle:thin:@//cis86ldv.spr.bz:1521/CRMPRJ2S
     driver-class-name: oracle.jdbc.driver.OracleDriver
@@ -20,15 +21,6 @@ spring:
 jdbc:
   query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(f_checkuser(?, ?))
   update: false
-
----
-spring:
-  profiles: mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/nve
-    driver-class-name: com.mysql.jdbc.Driver
-    username: root
-    password: root
 
 ---
 spring:

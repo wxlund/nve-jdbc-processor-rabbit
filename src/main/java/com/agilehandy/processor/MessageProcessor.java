@@ -58,7 +58,7 @@ public class MessageProcessor {
 
 	@StreamListener(Processor.INPUT)
 	@SendTo(Processor.OUTPUT)
-	public Message<Map<String, Object>> process(Message<String> request) {
+	public Message<String> process(Message<String> request) {
 		String payload = request.getPayload();
 		MessageHeaders headers = request.getHeaders();
 
@@ -70,24 +70,16 @@ public class MessageProcessor {
 		// observe the order they are passed in
 		String[] params = this.jsonToParams(payload);
 
-		Map<String, Object> result = new HashMap<>();
-
-		// TODO: delete these
-		//result.put("key1", "value1");
-		//result.put("key2", "value2");
+		String result = "<error>no value<error>";
 
 		// perform jdbc operation
 		if(!properties.isUpdate()) {
 			result = worker.query(properties.getQuery(), params);
 		} else {
-			Integer count = worker.update(properties.getQuery(), params);
-			result = new HashMap<>();
-			result.put("count", count);
+			result = worker.update(properties.getQuery(), params);
 		}
 
-		logger.info("Sending: ");
-		result.entrySet().stream().forEach(entry ->
-				logger.info(entry.getKey() + ":" + (String)entry.getValue()));
+		logger.info("Sending: " + result);
 
 		// pass the result thru with headers
 		return MessageBuilder.withPayload(result)
