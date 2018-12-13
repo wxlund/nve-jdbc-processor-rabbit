@@ -29,14 +29,12 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Haytham Mohamed
@@ -62,14 +60,21 @@ public class MessageProcessor {
 	@SendTo(Processor.OUTPUT)
 	public Message<Map<String, Object>> process(Message<String> request) {
 		String payload = request.getPayload();
+		MessageHeaders headers = request.getHeaders();
 
-		logger.info("Received: " + payload);
+		logger.info("Received payload: " + payload);
+		logger.info("Received headers: ");
+		headers.entrySet().stream().forEach(e -> logger.info(e.getKey()+":"+e.getValue()));
 
 		// convert the payload (json) to string of params
 		// observe the order they are passed in
 		String[] params = this.jsonToParams(payload);
 
 		Map<String, Object> result = new HashMap<>();
+
+		// TODO: delete these
+		//result.put("key1", "value1");
+		//result.put("key2", "value2");
 
 		// perform jdbc operation
 		if(!properties.isUpdate()) {
@@ -84,7 +89,7 @@ public class MessageProcessor {
 		result.entrySet().stream().forEach(entry ->
 				logger.info(entry.getKey() + ":" + (String)entry.getValue()));
 
-		// pass the result thru
+		// pass the result thru with headers
 		return MessageBuilder.withPayload(result)
 				.copyHeaders(request.getHeaders())
 				.build();

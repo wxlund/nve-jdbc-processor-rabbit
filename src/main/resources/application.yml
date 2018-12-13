@@ -20,3 +20,24 @@ spring:
 jdbc:
   query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(f_checkuser(?, ?))
   update: false
+
+---
+spring:
+  profiles: mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/nve
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:49161/xe
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: system
+    password: oracle
+
+jdbc:
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(hr.f_checkuser(?, ?))
