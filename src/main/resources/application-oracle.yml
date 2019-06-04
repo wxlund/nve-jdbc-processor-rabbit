@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: nve-jdbc-processor-rabbit
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: txf1
+        output:
+          destination: replies
+          content-type: application/xml
+  datasource:
+    url: jdbc:oracle:thin:@//cis86ldv.spr.bz:1521/CRMPRJ2S
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: WEBSRVR_030
+    password: trg4wq40x
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+
+jdbc:
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(f_checkuser(?, ?))
+  update: false
+
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:49161/xe
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: system
+    password: oracle
+
+jdbc:
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(hr.f_checkuser(?, ?))

@@ -10,26 +10,30 @@ spring:
           destination: replies
           content-type: application/xml
   datasource:
-    url: jdbc:oracle:thin:@//cis86ldv.spr.bz:1521/CRMPRJ2S
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: WEBSRVR_030
-    password: trg4wq40x
+    url: jdbc:postgresql://localhost:5432/nve
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
     hikari:
       maximum-pool-size: 10
       connection-timeout: 5000
-
+  jpa:
+    show-sql: true
+      
 jdbc:
-  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(f_checkuser(?, ?))
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from xtable(f_checkuser(?, ?))
   update: false
 
 ---
 spring:
   profiles: local
   datasource:
-    url: jdbc:oracle:thin:@//localhost:49161/xe
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: system
-    password: oracle
+    url: jdbc:postgresql://localhost:5432/nve
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
 
 jdbc:
-  query: select returncode, messageid, messagetext, userexistsind, ssn4 from table(hr.f_checkuser(?, ?))
+  query: select returncode, messageid, messagetext, userexistsind, ssn4 from xtable(hr.f_checkuser(?, ?))
